@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="th" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jarvis Expense Tracker</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4e54c8">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-medium">
+
+    <nav class="navbar fixed-top glass-effect shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1 fw-bold text-primary">
+                <i class="fas fa-robot"></i> J.A.V.I.S.
+            </span>
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-outline-secondary rounded-circle" id="themeToggle" onclick="app.toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-primary rounded-circle" data-bs-toggle="dropdown">
+                        <i class="fas fa-text-height"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <li><h6 class="dropdown-header">ขนาดตัวอักษร</h6></li>
+                        <li><a class="dropdown-item" href="#" onclick="app.changeFontSize('font-small')">เล็ก</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="app.changeFontSize('font-medium')">ปกติ</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="app.changeFontSize('font-large')">ใหญ่</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="app.changeFontSize('font-xl')">ใหญ่มาก</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="app.changeFontSize('font-god')">ใหญ่โคตร</a></li>
+                    </ul>
+                </div>
+                <button class="btn btn-sm btn-success rounded-circle" onclick="app.exportData()">
+                    <i class="fas fa-file-export"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 80px; margin-bottom: 100px;">
+        
+        <div class="d-flex justify-content-between align-items-end mb-2 px-1">
+            <h6 class="text-muted m-0 fw-bold">ภาพรวม (วันนี้)</h6>
+            <small class="text-primary fw-bold" id="currentDateDisplay">--/--/----</small>
+        </div>
+
+        <div class="card border-0 shadow-lg rounded-4 mb-4 glass-card bg-gradient-primary text-white overflow-hidden">
+            <div class="card-body p-4 text-center position-relative">
+                <div class="background-circle"></div>
+                <h6 class="opacity-75">คงเหลือ (เฉพาะวันนี้)</h6>
+                <h1 class="display-4 fw-bold mb-3" id="balanceDisplay">0.00</h1>
+                
+                <div class="row g-2 mt-3">
+                    <div class="col-6 border-end border-light border-opacity-25">
+                        <small class="opacity-75"><i class="fas fa-arrow-down"></i> รับวันนี้</small>
+                        <h4 class="text-success-light fw-bold" id="incomeDisplay">0.00</h4>
+                    </div>
+                    <div class="col-6">
+                        <small class="opacity-75"><i class="fas fa-arrow-up"></i> จ่ายวันนี้</small>
+                        <h4 class="text-danger-light fw-bold" id="expenseDisplay">0.00</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-2 mb-4">
+            <div class="col-4">
+                <button class="btn btn-light w-100 py-3 shadow-sm rounded-4 border-0" onclick="app.openReport('daily')">
+                    <i class="fas fa-calendar-day text-primary fa-lg mb-2"></i><br>
+                    <small>ย้อนหลัง</small>
+                </button>
+            </div>
+            <div class="col-4">
+                <button class="btn btn-light w-100 py-3 shadow-sm rounded-4 border-0" onclick="app.openReport('monthly')">
+                    <i class="fas fa-chart-pie text-warning fa-lg mb-2"></i><br>
+                    <small>รายเดือน</small>
+                </button>
+            </div>
+            <div class="col-4">
+                <button class="btn btn-light w-100 py-3 shadow-sm rounded-4 border-0" onclick="app.openReport('yearly')">
+                    <i class="fas fa-chart-line text-success fa-lg mb-2"></i><br>
+                    <small>รายปี</small>
+                </button>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3 px-1">
+            <h5 class="fw-bold m-0"><i class="fas fa-history text-muted"></i> 10 รายการล่าสุด</h5>
+        </div>
+
+        <ul id="list" class="list-group list-group-flush gap-2">
+            </ul>
+
+        <div id="emptyState" class="text-center py-5 d-none">
+            <i class="fas fa-folder-open fa-4x text-muted mb-3 opacity-25"></i>
+            <p class="text-muted">ยังไม่มีรายการบันทึก</p>
+        </div>
+    </div>
+
+    <button class="btn btn-primary rounded-circle shadow-lg fab-btn" data-bs-toggle="modal" data-bs-target="#addModal">
+        <i class="fas fa-plus fa-lg"></i>
+    </button>
+
+    <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">บันทึกรายการใหม่</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <form id="transactionForm">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control rounded-3" id="text" placeholder="รายการ" required>
+                            <label for="text">ชื่อรายการ (เช่น ข้าวผัด)</label>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-light border-0"><i class="fas fa-baht-sign"></i></span>
+                            <div class="form-floating flex-grow-1">
+                                <input type="number" class="form-control border-start-0 rounded-end-3" id="amount" placeholder="จำนวนเงิน" required>
+                                <label for="amount">จำนวนเงิน</label>
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-4">
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="type" id="type-expense" value="expense" checked>
+                                <label class="btn btn-outline-danger w-100 rounded-3 py-3" for="type-expense">
+                                    <i class="fas fa-minus-circle mb-1"></i><br>รายจ่าย
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="type" id="type-income" value="income">
+                                <label class="btn btn-outline-success w-100 rounded-3 py-3" for="type-income">
+                                    <i class="fas fa-plus-circle mb-1"></i><br>รายรับ
+                                </label>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-3 shadow-sm">บันทึกข้อมูล</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="reportTitle">รายงาน</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="datePickerContainer" class="mb-3 d-none">
+                        <label class="form-label text-muted">เลือกวันที่ต้องการดู</label>
+                        <input type="date" class="form-control rounded-3" id="reportDateInput">
+                    </div>
+
+                    <div class="card bg-body-tertiary border-0 mb-3 rounded-4">
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">รายรับรวม:</span>
+                                <span class="text-success fw-bold" id="reportIncome">0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">รายจ่ายรวม:</span>
+                                <span class="text-danger fw-bold" id="reportExpense">0.00</span>
+                            </div>
+                            <hr class="my-2">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">คงเหลือสุทธิ:</span>
+                                <span class="text-primary fw-bold" id="reportBalance">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold text-muted mb-3">รายละเอียด</h6>
+                    <ul id="reportList" class="list-group list-group-flush gap-2">
+                        </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/models/ExpenseModel.js"></script>
+    <script src="js/views/UIRenderer.js"></script>
+    <script src="js/controllers/AppController.js"></script>
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+        }
+    </script>
+</body>
+</html>
