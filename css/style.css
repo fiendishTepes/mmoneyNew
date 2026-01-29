@@ -1,1 +1,123 @@
+:root {
+    --primary-gradient: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+    --card-bg-light: rgba(255, 255, 255, 0.9);
+    --card-bg-dark: rgba(33, 37, 41, 0.95);
+    --text-success-light: #d1e7dd;
+    --text-danger-light: #f8d7da;
+}
 
+body {
+    background-color: #f0f2f5;
+    transition: background-color 0.3s, color 0.3s, font-size 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-bottom: 100px; /* กันเนื้อหาจมใต้ปุ่ม FAB */
+}
+
+/* --- Glassmorphism Effects --- */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.glass-card {
+    background: var(--primary-gradient);
+    backdrop-filter: blur(5px);
+    color: white;
+}
+
+/* --- Dark Mode Overrides --- */
+[data-bs-theme="dark"] body {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+[data-bs-theme="dark"] .glass-effect {
+    background: rgba(33, 37, 41, 0.85);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+[data-bs-theme="dark"] .list-group-item {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border: 1px solid #333;
+}
+
+[data-bs-theme="dark"] .modal-content {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+}
+
+/* --- Floating Action Button (FAB) --- */
+.fab-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy effect */
+    border: none;
+}
+.fab-btn:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+.fab-btn:active {
+    transform: scale(0.9);
+}
+
+/* --- List Items --- */
+.list-group-item {
+    border: none;
+    margin-bottom: 10px;
+    border-radius: 15px !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.list-group-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+}
+
+/* --- Font Sizes Levels --- */
+.font-small { font-size: 12px; }
+.font-medium { font-size: 16px; }
+.font-large { font-size: 20px; }
+.font-xl { font-size: 24px; }
+.font-god { font-size: 32px; }
+
+/* Scale Elements */
+h1, h2, h3, h4, h5, h6, p, input, .btn, .form-control { font-size: 1em; }
+.display-4 { font-size: 3em; }
+
+/* --- Decorations --- */
+.background-circle {
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 250px;
+    height: 250px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* --- Animations --- */
+.fade-in-effect {
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Text Colors inside dark card */
+.text-success-light { color: #a3cfbb !important; }
+.text-danger-light { color: #f1aeb5 !important; }
